@@ -7,9 +7,12 @@ entrypoint: server.app:app
 tasks:
   - name: email_triage
     grader: tasks.graders:email_grade
+    runner: inference.py
 
   - name: meeting_scheduler
     grader: tasks.graders:meeting_grade
+    runner: inference.py
 
   - name: document_review
     grader: tasks.graders:doc_grade
+    runner: inference.py
