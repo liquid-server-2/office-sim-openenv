@@ -1,8 +1,14 @@
+name: office-sim-openenv
+description: Multi-task office simulation environment
+version: 1.0
 
-name: office-sim-final-boss
-description: Multi-task office AI benchmark
-version: 3.0
 tasks:
-  - email_triage
-  - meeting_scheduler
-  - document_review
+  - name: email_triage
+    grader: tasks.graders.email_grade
+
+  - name: meeting_scheduler
+    grader: tasks.graders.meeting_grade
+
+  - name: document_review
+    grader: tasks.graders.doc_grade
+
