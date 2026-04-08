@@ -2,16 +2,19 @@
 name = "office-sim-openenv"
 version = "0.1.0"
 description = "Office simulation OpenEnv environment"
-authors = [
-  { name = "jwell123" }
-]
+authors = [{ name = "jwell123" }]
+
 dependencies = [
   "fastapi",
   "uvicorn",
   "pydantic",
-  "openai"
+  "openai",
+  "openenv-core>=0.2.0"
 ]
 
+[project.scripts]
+server = "server.app:app"
+
 [tool.openenv]
-entrypoint = "app:app"
+entrypoint = "server.app:app"
 
