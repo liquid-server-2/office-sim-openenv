@@ -87,7 +87,8 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 
-    # KEEP CONTAINER ALIVE (IMPORTANT FOR HF)
+    # Light keep-alive (HF friendly)
     import time
+    print("Container is alive...", flush=True)
     while True:
-        time.sleep(3600)
+        time.sleep(60)
