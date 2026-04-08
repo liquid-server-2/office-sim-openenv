@@ -20,7 +20,7 @@ def log_end(success, steps, score, rewards):
 
 
 def fallback_agent(prompt: str) -> str:
-    """Deterministic fallback (VERY IMPORTANT for no-API case)"""
+    """Deterministic fallback agent (no API needed)"""
     p = prompt.lower()
 
     if "urgent" in p or "bug" in p:
@@ -34,7 +34,14 @@ def fallback_agent(prompt: str) -> str:
 
 
 async def main():
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+    # SAFE CLIENT INIT (no crash if no API key)
+    client = None
+    if API_KEY:
+        try:
+            client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+        except:
+            client = None
+
     env = OfficeEnv()
 
     rewards = []
@@ -48,16 +55,17 @@ async def main():
 
         prompt = result.observation["content"]
 
-        try:
-            # Try real API call
-            completion = client.chat.completions.create(
-                model=MODEL_NAME,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            action = completion.choices[0].message.content
-
-        except Exception as e:
-            # Fallback if API fails (quota, key, etc.)
+        # SAFE API CALL
+        if client:
+            try:
+                completion = client.chat.completions.create(
+                    model=MODEL_NAME,
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                action = completion.choices[0].message.content
+            except:
+                action = fallback_agent(prompt)
+        else:
             action = fallback_agent(prompt)
 
         result = await env.step(action)
