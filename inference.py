@@ -1,10 +1,12 @@
-import asyncio, os
+import asyncio
+import os
 from openai import OpenAI
 from env.main_env import OfficeEnv
 
-API_BASE_URL = os.getenv("API_BASE_URL")
-API_KEY = os.getenv("OPENAI_API_KEY")
-MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
+# ✅ REQUIRED ENV VARIABLES (DO NOT CHANGE NAMES)
+API_BASE_URL = os.environ.get("API_BASE_URL")
+API_KEY = os.environ.get("API_KEY")
+MODEL_NAME = os.environ.get("MODEL_NAME", "gpt-4o-mini")
 
 
 def log_start(task, env, model):
@@ -20,7 +22,7 @@ def log_end(success, steps, score, rewards):
 
 
 def fallback_agent(prompt: str) -> str:
-    """Deterministic fallback agent (no API needed)"""
+    """Fallback agent if API fails"""
     p = prompt.lower()
 
     if "urgent" in p or "bug" in p:
@@ -34,13 +36,11 @@ def fallback_agent(prompt: str) -> str:
 
 
 async def main():
-    # SAFE CLIENT INIT (no crash if no API key)
-    client = None
-    if API_KEY:
-        try:
-            client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
-        except:
-            client = None
+    # ✅ MUST USE PROVIDED PROXY
+    client = OpenAI(
+        base_url=API_BASE_URL,
+        api_key=API_KEY
+    )
 
     env = OfficeEnv()
 
@@ -55,21 +55,20 @@ async def main():
 
         prompt = result.observation["content"]
 
-        # SAFE API CALL
-        if client:
-            try:
-                completion = client.chat.completions.create(
-                    model=MODEL_NAME,
-                    messages=[{"role": "user", "content": prompt}]
-                )
-                action = completion.choices[0].message.content
-            except:
-                action = fallback_agent(prompt)
-        else:
+        # ✅ MUST ATTEMPT API CALL (CRITICAL)
+        try:
+            completion = client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            action = completion.choices[0].message.content
+
+        except Exception as e:
+            # fallback only if API fails
             action = fallback_agent(prompt)
 
         result = await env.step(action)
-        reward = result.reward
+        reward = result.reward or 0.0
 
         rewards.append(reward)
         log_step(step, action, reward, result.done, None)
