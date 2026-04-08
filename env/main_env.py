@@ -4,20 +4,10 @@ from tasks.graders import email_grade, meeting_grade, doc_grade
 
 class OfficeEnv:
     def __init__(self):
-        # ✅ EXPLICIT TASK DEFINITIONS (VERY IMPORTANT)
         self.tasks = [
-            {
-                "name": "email_triage",
-                "grader": email_grade
-            },
-            {
-                "name": "meeting_scheduler",
-                "grader": meeting_grade
-            },
-            {
-                "name": "document_review",
-                "grader": doc_grade
-            }
+            {"name": "email_triage", "grader": email_grade},
+            {"name": "meeting_scheduler", "grader": meeting_grade},
+            {"name": "document_review", "grader": doc_grade},
         ]
 
         self.current_task = 0
@@ -27,7 +17,6 @@ class OfficeEnv:
         self.meeting_data = json.load(open("data/meetings.json"))
         self.doc_data = json.load(open("data/docs.json"))
 
-    # ✅ expose tasks for validator
     def get_tasks(self):
         return [t["name"] for t in self.tasks]
 
@@ -35,8 +24,7 @@ class OfficeEnv:
         self.current_task = 0
         self.done = False
 
-        retu
-rn type("Res", (), {
+        return type("Res", (), {
             "observation": {
                 "task": "email_triage",
                 "content": self.email_data[0]["text"]
