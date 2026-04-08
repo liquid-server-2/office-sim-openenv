@@ -1,0 +1,8 @@
+
+name: office-sim-final-boss
+description: Multi-task office AI benchmark
+version: 3.0
+tasks:
+  - email_triage
+  - meeting_scheduler
+  - document_review

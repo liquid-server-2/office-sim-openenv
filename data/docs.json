@@ -1,0 +1,10 @@
+[
+  {
+    "text": "Contract without termination clause",
+    "risk": "missing termination"
+  },
+  {
+    "text": "Proper NDA agreement",
+    "risk": "none"
+  }
+]

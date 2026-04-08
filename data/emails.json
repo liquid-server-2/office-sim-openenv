@@ -1,0 +1,10 @@
+[
+  {
+    "text": "Urgent: fix production bug",
+    "label": "urgent"
+  },
+  {
+    "text": "Weekly newsletter",
+    "label": "ignore"
+  }
+]
