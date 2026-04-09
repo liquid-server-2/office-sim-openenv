@@ -70,3 +70,22 @@ class OfficeEnv:
 
     async def close(self):
         pass
+            # ✅ REQUIRED FOR VALIDATOR
+    @property
+    def tasks(self):
+        return [
+            "email_triage",
+            "meeting_scheduler",
+            "document_review"
+        ]
+
+    # ✅ REQUIRED FOR VALIDATOR
+    def grader(self, task_id: str):
+        if task_id == "email_triage":
+            return email_grade
+        elif task_id == "meeting_scheduler":
+            return meeting_grade
+        elif task_id == "document_review":
+            return doc_grade
+        else:
+            raise ValueError("Unknown task")
